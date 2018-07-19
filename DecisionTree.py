@@ -4,22 +4,17 @@ import pandas as pd
 import numpy as np 
 from common import *
 import time
+from time import ctime
 # from PlotTree import *
-def set_func(func):
-    num = [0]   # 闭包中外函数中的变量指向的引用不可变
-    # tree = kargs.myTree
-    def call_func(**kargs):
+
+def countFunc(func):
+    num = [0]
+    def timef(*s,**gs):
         num[0] += 1
         print("执行次数",num[0])
-        return func(**kargs)
+        return func(*s,**gs)
+    return timef
 
-    return call_func
-
-# class DesicionTree(object):
-#     """docstring for DesicionTree"""
-#     def __init__(self):
-#         super(DesicionTree, self).__init__()
-#         # self.count = 0
         
 def read_file(filepath):
     file = pd.read_csv(filepath, names = columns)
@@ -28,7 +23,7 @@ def read_file(filepath):
     file.drop('animal_name', axis = 1, inplace = True)
     return file
 
-
+@countFunc
 def calcalcShannonEnt(dataSet, types):
     shannonEnt = 0
     length = len(dataSet)
@@ -75,7 +70,7 @@ def splitData(dataSet, axis):
         childSet[var].drop([index], axis = 1)
     return childSet
 
-@set_func
+
 def createDecisionTree(dataSet):
     index = ChooseBestFeature(dataSet)
     if index is not None:
